@@ -1,14 +1,10 @@
 package org.example.model.structure;
 
 import org.example.model.comparator.Comparator;
+import org.example.model.usertype.prototype.ProtoType;
 
+import java.io.*;
 import java.util.Vector;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import java.util.ArrayList;
 
@@ -35,35 +31,37 @@ public class BinaryTreeArray implements Serializable {
         this.arrayTree = t;
     }
 
-    public void save()  {
-        try {
-        FileOutputStream outputStream = new FileOutputStream("saved.ser");
-        ObjectOutputStream out = new ObjectOutputStream(outputStream);
-        out.writeObject(this);
-        out.close();
-        outputStream.close();
-        }
-        catch(IOException i) {
-            i.printStackTrace();
-        }
-         
-    }
-
-    public BinaryTreeArray load() {
-        BinaryTreeArray loadedArrayTree = null;
-        try {
-        FileInputStream fileIn = new FileInputStream("saved.ser");
-        ObjectInputStream in = new ObjectInputStream(fileIn);
-        loadedArrayTree = (BinaryTreeArray) in.readObject();
-        in.close();
-        fileIn.close();
-        }
-        catch(IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException e) {
+    public void save(ProtoType userType, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            writer.write(userType.typeName() + "\n");
+            this.forEach(el -> {
+                try {
+                    writer.write(el.toString() + "\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return loadedArrayTree;
+    }
+
+    public BinaryTreeArray load(ProtoType userType, String fileName) {
+        BinaryTreeArray bts = new BinaryTreeArray(this.comparator);
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            line = br.readLine();
+            if (!userType.typeName().equals(line)) {
+                throw new Exception("Wrong file structure");
+            }
+
+            while ((line = br.readLine()) != null) {
+                bts.addValue(userType.parseValue(line));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return bts;
     }
 
     // Вcпомогательный метод вставки значения в массив
