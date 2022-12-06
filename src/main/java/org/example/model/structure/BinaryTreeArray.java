@@ -66,10 +66,15 @@ public class BinaryTreeArray implements Serializable {
 
     // Вcпомогательный метод вставки значения в массив
     private void insertRecursive(int current, Object obj){
-        if (current >= size){ // увеличение размерности при выходе
+        /*if (current >= size){ // увеличение размерности при выходе
             size *= 2; // за пределы массива
             for (int i = size/2; i <= size; i++) // с обнулением новой части
                arrayTree.add(null);
+        }*/
+        while (current >= size) {
+            size*=2;
+            for (int i = size/2; i <= size; i++) // с обнулением новой части
+                arrayTree.add(null);
         }
 
         if (arrayTree.get(current) == null) {
@@ -401,5 +406,12 @@ public class BinaryTreeArray implements Serializable {
     public boolean equals(Object obj) {
        BinaryTreeArray bts = (BinaryTreeArray)obj;
        return scanForEquals(bts.arrayTree, bts.size, 0);
+    }
+
+    public void clear(){
+        arrayTree.clear();
+        size = 10;
+        for (int i = 0; i < size; i++)
+            arrayTree.add(null);
     }
 }
