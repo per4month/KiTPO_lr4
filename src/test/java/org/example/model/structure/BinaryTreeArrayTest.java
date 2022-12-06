@@ -343,7 +343,7 @@ class BinaryTreeArrayTest {
     public void testBalanced() {
         System.out.println("BALANCED TEST");
 
-        for (int countOfElem = 5000; countOfElem <= 100000; countOfElem += 5000) {
+        for (int countOfElem = 1; countOfElem <= 2048; countOfElem *= 2) {
             for (int i = 0; i < countOfElem; i++){
                 actualBts.addValue(protoType.create());
             }
@@ -351,8 +351,8 @@ class BinaryTreeArrayTest {
             long startTime = System.nanoTime();
             actualBts.addValue(protoType.create());
             long endTime = System.nanoTime();
-            long timeElapsed = endTime - startTime;
-            System.out.println("N = " + countOfElem + ". Time = " + timeElapsed / 1000000 + " ms.");
+            double timeElapsed = (endTime - startTime) * 1.0 / 1_000_000;
+            System.out.println("N = " + countOfElem + ". Time = " + timeElapsed + " ms.");
             actualBts.clear();
         }
         System.out.println("----------------------");
@@ -368,15 +368,15 @@ class BinaryTreeArrayTest {
     public void testPerformance() {
         System.out.println("PERFORMANCE TEST");
 
-        for (int countOfElem = 5000; countOfElem <= 100000; countOfElem += 5000) {
+        for (int countOfElem = 1; countOfElem <= 2048; countOfElem *=2) {
             for (int i = 0; i < countOfElem; i++){
                 actualBts.addValue(protoType.create());
             }
             long startTime = System.nanoTime();
             actualBts = actualBts.balance();
             long endTime = System.nanoTime();
-            long timeElapsed = endTime - startTime;
-            System.out.println("N = " + countOfElem + ". Time = " + timeElapsed / 1000000 + " ms.");
+            double timeElapsed = (endTime - startTime) * 1.0 / 1_000_000;
+            System.out.println("N = " + countOfElem + ". Time = " + timeElapsed + " ms.");
             actualBts.clear();
         }
         System.out.println("----------------------");
