@@ -370,4 +370,36 @@ public class BinaryTreeArray implements Serializable {
         String str = "";
         return scan(0,0,str);
     }
+
+    private boolean scanForEquals(ArrayList<Object> otherArrayTree, int otherSize, int current){
+        if (current >= size && current >= otherSize)
+            return true;
+        if ((current >= size && !(current >= otherSize)) || (!(current >= size) && current >= otherSize))
+            return false;
+        if (arrayTree.get(current) == null && otherArrayTree.get(current) == null)
+            return true;
+        if (arrayTree.get(current) == null && otherArrayTree.get(current) != null)
+            return false;
+        if (arrayTree.get(current) != null && otherArrayTree.get(current) == null)
+            return false;
+
+        boolean curBool = true;
+
+        curBool = scanForEquals(otherArrayTree, otherSize, 2 * current + 1);
+
+        if (curBool == false)
+            return false;
+
+        if (comparator.compare(arrayTree.get(current), otherArrayTree.get(current)) != 0)
+            return false;
+
+        curBool = scanForEquals(otherArrayTree, otherSize,2 * current + 2);
+
+        return curBool;
+    }
+    @Override
+    public boolean equals(Object obj) {
+       BinaryTreeArray bts = (BinaryTreeArray)obj;
+       return scanForEquals(bts.arrayTree, bts.size, 0);
+    }
 }
