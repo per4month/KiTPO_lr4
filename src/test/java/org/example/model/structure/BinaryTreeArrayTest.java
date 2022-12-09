@@ -6,17 +6,27 @@ import org.example.model.usertype.type.IntegerClass;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Параметр сбалансированности - сумма значения длин путей
+
 class BinaryTreeArrayTest {
     private FactoryType factoryType;
     private ProtoType protoType;
     private BinaryTreeArray expectedBts, actualBts;
 
+    private int getExpectedSumPathLength(int level){
+        int sum = 0;
+        for (int curLevel = 0, N=1; curLevel < level; curLevel++, N*=2)
+            sum+=curLevel*N;
+
+        return sum;
+    }
+
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
         factoryType = new FactoryType();
         protoType = factoryType.getBuilderByName("Integer");
-        expectedBts = new BinaryTreeArray(protoType.getTypeComparator());
         actualBts = new BinaryTreeArray(protoType.getTypeComparator());
+        expectedBts = new BinaryTreeArray(protoType.getTypeComparator());
     }
 
     // Тестовое покрытие балансировки
@@ -24,202 +34,177 @@ class BinaryTreeArrayTest {
     @org.junit.jupiter.api.Test
     public void test1(){
         System.out.println("TEST 1. Increasing order");
+        // Параметр сбалансированности - сумма значения длин путей
 
-        // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("1"));
-        actualBts.addValue(protoType.parseValue("2"));
-        actualBts.addValue(protoType.parseValue("3"));
-        actualBts.addValue(protoType.parseValue("4"));
-        actualBts.addValue(protoType.parseValue("5"));
+        int cntLevel = 3; //кол-во уровней
+        int cntNode = (int) (Math.pow(2, cntLevel) - 1); //кол-во генерируемых вершин
+
+        // Добавление вершин
+        for (int value = 0; value < cntNode; value++)
+            actualBts.addValue(protoType.parseValue(String.valueOf(value)));
 
         actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
-        actualBts.printTree();
 
-        // Ожидаемое значение дерева (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("2"));
-        expectedBts.addValue(protoType.parseValue("5"));
-        expectedBts.addValue(protoType.parseValue("1"));
-        expectedBts.addValue(protoType.parseValue("4"));
+        int actual = actualBts.getSumPathLengths();
+        int expected = getExpectedSumPathLength(cntLevel);
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         System.out.println("----------------------");
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     // Второй тест: значения добавлены в дерево в строго убывающем порядке
     @org.junit.jupiter.api.Test
     public void test2(){
         System.out.println("TEST 2. Decreasing order");
+        // Параметр сбалансированности - сумма значения длин путей
 
-        // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("10"));
-        actualBts.addValue(protoType.parseValue("9"));
-        actualBts.addValue(protoType.parseValue("8"));
-        actualBts.addValue(protoType.parseValue("7"));
-        actualBts.addValue(protoType.parseValue("6"));
+        int cntLevel = 4; //кол-во уровней
+        int cntNode = (int) (Math.pow(2, cntLevel) - 1); //кол-во генерируемых вершин
+
+        // Добавление вершин
+        for (int value = 0; value < cntNode; value++)
+            actualBts.addValue(protoType.parseValue(String.valueOf(cntNode - value)));
 
         actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
-        actualBts.printTree();
 
-        // Ожидаемое значение (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("8"));
-        expectedBts.addValue(protoType.parseValue("7"));
-        expectedBts.addValue(protoType.parseValue("10"));
-        expectedBts.addValue(protoType.parseValue("6"));
-        expectedBts.addValue(protoType.parseValue("9"));
+        int actual = actualBts.getSumPathLengths();
+        int expected = getExpectedSumPathLength(cntLevel);
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         System.out.println("----------------------");
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     // Третий тест: исходный набор содержит одинаковые значения
     @org.junit.jupiter.api.Test
     public void test3(){
         System.out.println("TEST 3. All values are equal");
+        // Параметр сбалансированности - сумма значения длин путей
 
-        // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("3"));
-        actualBts.addValue(protoType.parseValue("3"));
-        actualBts.addValue(protoType.parseValue("3"));
-        actualBts.addValue(protoType.parseValue("3"));
-        actualBts.addValue(protoType.parseValue("3"));
+        int cntLevel = 3; //кол-во уровней
+        int cntNode = (int) (Math.pow(2, cntLevel) - 1); //кол-во генерируемых вершин
 
-        actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
+        // Добавление вершин
+        for (int value = 0; value < cntNode; value++)
+            actualBts.addValue(protoType.parseValue(String.valueOf(3)));
+
         actualBts.printTree();
 
-        // Ожидаемое значение (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("3"));
+        actualBts = actualBts.balance();
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
+        actualBts.printTree();
+        int actual = actualBts.getSumPathLengths();
+        int expected = 0;
+        for (int i = 0; i < cntNode; i++)
+            expected += i;
+
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         System.out.println("----------------------");
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     // Четвёртый тест: дерево уже сбалансировано
     @org.junit.jupiter.api.Test
     public void test4(){
         System.out.println("TEST 4. Tree is balanced already");
+        // Параметр сбалансированности - сумма значения длин путей
 
-        // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("8"));
-        actualBts.addValue(protoType.parseValue("7"));
-        actualBts.addValue(protoType.parseValue("10"));
-        actualBts.addValue(protoType.parseValue("6"));
-        actualBts.addValue(protoType.parseValue("9"));
+        int cntLevel = 6; //кол-во уровней
+        int cntNode = (int) (Math.pow(2, cntLevel) - 1); //кол-во генерируемых вершин
+
+        // Добавление вершин
+        for (int value = 0; value < cntNode; value++) {
+            actualBts.addValue(protoType.create());
+            actualBts = actualBts.balance(); //после каждого добавления - балансируем
+        }
 
         actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
-        actualBts.printTree();
 
-        // Ожидаемое значение (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("8"));
-        expectedBts.addValue(protoType.parseValue("7"));
-        expectedBts.addValue(protoType.parseValue("10"));
-        expectedBts.addValue(protoType.parseValue("6"));
-        expectedBts.addValue(protoType.parseValue("9"));
+        int actual = actualBts.getSumPathLengths();
+        int expected = getExpectedSumPathLength(cntLevel);
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         System.out.println("----------------------");
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     // Пятый тест: несбалансированное дерево имеет две ветви (с возрастающими и убывающими значениями относительно корня)
     @org.junit.jupiter.api.Test
     public void test5(){
         System.out.println("TEST 5. Two branches");
+        // Параметр сбалансированности - сумма значения длин путей
 
-        // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("5"));
-        actualBts.addValue(protoType.parseValue("4"));
-        actualBts.addValue(protoType.parseValue("6"));
-        actualBts.addValue(protoType.parseValue("3"));
-        actualBts.addValue(protoType.parseValue("7"));
-        actualBts.addValue(protoType.parseValue("2"));
-        actualBts.addValue(protoType.parseValue("8"));
-        actualBts.addValue(protoType.parseValue("1"));
-        actualBts.addValue(protoType.parseValue("9"));
+        int cntLevel = 3; //кол-во уровней
+        int cntNode = (int) (Math.pow(2, cntLevel) - 1); //кол-во генерируемых вершин
+
+        int median = cntNode / 2;
+
+        // Добавление вершин левого поддерева относительно корня (вместе с корнем)
+        for (int value = 0; value <= median; value++) {
+            actualBts.addValue(protoType.parseValue(String.valueOf(median - value)));
+        }
+        // Добавление вершин правого поддерева относительно корня
+        for (int value = median + 1; value < cntNode; value++) {
+            actualBts.addValue(protoType.parseValue(String.valueOf(value)));
+        }
 
         actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
-        actualBts.printTree();
 
-        // Ожидаемое значение (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("5"));
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("8"));
-        expectedBts.addValue(protoType.parseValue("2"));
-        expectedBts.addValue(protoType.parseValue("4"));
-        expectedBts.addValue(protoType.parseValue("7"));
-        expectedBts.addValue(protoType.parseValue("9"));
-        expectedBts.addValue(protoType.parseValue("1"));
-        expectedBts.addValue(protoType.parseValue("6"));
+        int actual = actualBts.getSumPathLengths();
+        int expected = getExpectedSumPathLength(cntLevel);
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         System.out.println("----------------------");
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     // Шестой тест: исходные данные неупорядочены (на входе)
     @org.junit.jupiter.api.Test
     public void test6(){
         System.out.println("TEST 6. Values isn't ordered");
+        // Параметр сбалансированности - сумма значения длин путей
 
-        // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("10"));
-        actualBts.addValue(protoType.parseValue("6"));
-        actualBts.addValue(protoType.parseValue("7"));
-        actualBts.addValue(protoType.parseValue("13"));
-        actualBts.addValue(protoType.parseValue("3"));
-        actualBts.addValue(protoType.parseValue("9"));
+        int cntLevel = 5; //кол-во уровней
+        int cntNode = (int) (Math.pow(2, cntLevel) - 1); //кол-во генерируемых вершин
+
+        // Добавление вершин
+        for (int value = 0; value < cntNode; value++) {
+            actualBts.addValue(protoType.create());
+        }
 
         actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
-        actualBts.printTree();
 
-        // Ожидаемое значение (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("9"));
-        expectedBts.addValue(protoType.parseValue("6"));
-        expectedBts.addValue(protoType.parseValue("13"));
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("7"));
-        expectedBts.addValue(protoType.parseValue("10"));
+        int actual = actualBts.getSumPathLengths();
+        int expected = getExpectedSumPathLength(cntLevel);
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         System.out.println("----------------------");
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     // Седьмой тест: элемент из середины интервала встречается несколько раз
@@ -235,29 +220,24 @@ class BinaryTreeArrayTest {
         actualBts.addValue(protoType.parseValue("7"));
         actualBts.addValue(protoType.parseValue("9"));
         actualBts.addValue(protoType.parseValue("13"));
-        actualBts.addValue(protoType.parseValue("3"));
 
         actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
-        actualBts.printTree();
 
-        // Ожидаемое значение (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("9"));
-        expectedBts.addValue(protoType.parseValue("7"));
-        expectedBts.addValue(protoType.parseValue("11"));
-        expectedBts.addValue(protoType.parseValue("6"));
-        expectedBts.addValue(protoType.parseValue("10"));
-        expectedBts.addValue(protoType.parseValue("13"));
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("9"));
+        int cntLevel = 3;
+        int actual = actualBts.getSumPathLengths();
+        int expected = getExpectedSumPathLength(cntLevel) + 1;
+        // +1 так как на уровне 3 не будет одной вершины,
+        // т.к. она будет на уровне 4
+        // т.е. getExpectedSumPathLength(cntLevel) - level + (level + 1)
+        // == getExpectedSumPathLength(cntLevel) + 1
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         System.out.println("----------------------");
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     // Восьмой тест: элемент из середины интервала встречается в листе левого поддерева
@@ -275,25 +255,18 @@ class BinaryTreeArrayTest {
         actualBts.addValue(protoType.parseValue("9"));
 
         actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
-        actualBts.printTree();
 
-        // Ожидаемое значение (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("9"));
-        expectedBts.addValue(protoType.parseValue("6"));
-        expectedBts.addValue(protoType.parseValue("11"));
-        expectedBts.addValue(protoType.parseValue("3"));
-        expectedBts.addValue(protoType.parseValue("7"));
-        expectedBts.addValue(protoType.parseValue("10"));
-        expectedBts.addValue(protoType.parseValue("13"));
+        int levels = 3;
+        int actual = actualBts.getSumPathLengths();
+        int expected = getExpectedSumPathLength(levels);
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         System.out.println("----------------------");
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     // Девятый тест: элемент из середины интервала встречается в корне дерева
@@ -311,25 +284,16 @@ class BinaryTreeArrayTest {
         actualBts.addValue(protoType.parseValue("5"));
 
         actualBts = actualBts.balance();
-        System.out.println("Actual tree:");
-        actualBts.printTree();
 
-        // Ожидаемое значение (знаем, как выглядит сбалансированное дерево, при таких входных данных)
-        expectedBts.addValue(protoType.parseValue("9"));
-        expectedBts.addValue(protoType.parseValue("5"));
-        expectedBts.addValue(protoType.parseValue("11"));
-        expectedBts.addValue(protoType.parseValue("4"));
-        expectedBts.addValue(protoType.parseValue("6"));
-        expectedBts.addValue(protoType.parseValue("10"));
-        expectedBts.addValue(protoType.parseValue("13"));
+        int levels = 3;
+        int actual = actualBts.getSumPathLengths();
+        int expected = getExpectedSumPathLength(levels);
 
-        System.out.println("Expected tree:");
-        expectedBts.printTree();
-
-        System.out.println("----------------------");
+        System.out.println("Actual sum of path lengths = " + actual);
+        System.out.println("Expected sum of path lengths = " + expected);
 
         // Сравниваем
-        assertEquals(expectedBts.toString(), actualBts.toString());
+        assertEquals(expected, actual);
     }
 
     /*
@@ -338,12 +302,11 @@ class BinaryTreeArrayTest {
     * 2. Далее дерево балансируется с помощью метода balance()
     * 3. Далее замеряется время вставки в дерево нового значения
     */
-
-    @org.junit.jupiter.api.Test
+   @org.junit.jupiter.api.Test
     public void testBalanced() {
         System.out.println("BALANCED TEST");
 
-        for (int countOfElem = 1; countOfElem <= 2048; countOfElem *= 2) {
+        for (int countOfElem = 1; countOfElem <= 1; countOfElem *= 2) {
             for (int i = 0; i < countOfElem; i++){
                 actualBts.addValue(protoType.create());
             }
@@ -364,11 +327,11 @@ class BinaryTreeArrayTest {
      * 2. Далее засекается время работы метода балансировки дерева balance()
      */
 
-    @org.junit.jupiter.api.Test
+   @org.junit.jupiter.api.Test
     public void testPerformance() {
         System.out.println("PERFORMANCE TEST");
 
-        for (int countOfElem = 1; countOfElem <= 2048; countOfElem *=2) {
+        for (int countOfElem = 1; countOfElem <= 1; countOfElem *=2) {
             for (int i = 0; i < countOfElem; i++){
                 actualBts.addValue(protoType.create());
             }

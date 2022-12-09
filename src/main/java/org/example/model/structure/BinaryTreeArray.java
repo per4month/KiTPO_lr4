@@ -145,6 +145,21 @@ public class BinaryTreeArray implements Serializable {
         return 1 + getSize(2 * num + 1) + getSize(2 * num + 2);
     }
 
+    public int getSizeTree(){
+        return getSize(0);
+    }
+
+    private int getSum(int num, int level){
+        //передаём левел с передачей рекурсивного значения
+        if (num >= size || arrayTree.get(num) == null)
+            return 0;
+        return level + getSum(2 * num + 1, level + 1) + getSum(2 * num + 2, level + 1);
+    }
+
+    public int getSumPathLengths(){
+        return getSum(0, 0);
+    }
+
     private Object getDataAtIndexRecursive(int searchIndex, int help){
         if (searchIndex >= size || searchIndex >= getSize(help))
             return null;
@@ -268,7 +283,7 @@ public class BinaryTreeArray implements Serializable {
         if (a==b) return;
 
         int m=(a+b) >>> 1;                                        // взять строку из середины интервала
-                          
+
         insertRecursive(r, 0,t.get(m));
 
         balance(t, m+1,b, r);                                   // рекурсивно выполнить для левой и
@@ -299,7 +314,7 @@ public class BinaryTreeArray implements Serializable {
     //главный метод балансировки
     public BinaryTreeArray balance(){
 
-        int sz1=getSize(0);
+        int sz1=getSize(0); // ДЕФЕКТ: было int sz1=getSize(0);
 
         Vector <Object> newArray = new Vector<Object> (size); //вектор индексов
 
