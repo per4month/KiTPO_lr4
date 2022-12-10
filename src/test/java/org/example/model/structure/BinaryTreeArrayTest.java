@@ -97,12 +97,11 @@ class BinaryTreeArrayTest {
         for (int value = 0; value < cntNode; value++)
             actualBts.addValue(protoType.parseValue(String.valueOf(3)));
 
-        actualBts.printTree();
-
         actualBts = actualBts.balance();
 
-        actualBts.printTree();
         int actual = actualBts.getSumPathLengths();
+
+        //оно уже и будет сбалансированным
         int expected = 0;
         for (int i = 0; i < cntNode; i++)
             expected += i;
@@ -302,21 +301,24 @@ class BinaryTreeArrayTest {
     * 2. Далее дерево балансируется с помощью метода balance()
     * 3. Далее замеряется время вставки в дерево нового значения
     */
-   @org.junit.jupiter.api.Test
+  @org.junit.jupiter.api.Test
     public void testBalanced() {
         System.out.println("BALANCED TEST");
 
-        for (int countOfElem = 1; countOfElem <= 1; countOfElem *= 2) {
+        for (int countOfElem = 1000; countOfElem <= 100000; countOfElem += 1000) {
             for (int i = 0; i < countOfElem; i++){
                 actualBts.addValue(protoType.create());
+                if (i % 100 == 0)
+                    actualBts = actualBts.balance();
             }
             actualBts = actualBts.balance();
+
             long startTime = System.nanoTime();
-            actualBts.addValue(protoType.create());
+            actualBts.removeNodeByIndex(actualBts.getSizeTree()-1);
             long endTime = System.nanoTime();
             double timeElapsed = (endTime - startTime) * 1.0 / 1_000_000;
             System.out.println("N = " + countOfElem + ". Time = " + timeElapsed + " ms.");
-            actualBts.clear();
+            actualBts = actualBts.newTree();
         }
         System.out.println("----------------------");
     }
@@ -327,7 +329,7 @@ class BinaryTreeArrayTest {
      * 2. Далее засекается время работы метода балансировки дерева balance()
      */
 
-   @org.junit.jupiter.api.Test
+   /*@org.junit.jupiter.api.Test
     public void testPerformance() {
         System.out.println("PERFORMANCE TEST");
 
@@ -343,5 +345,5 @@ class BinaryTreeArrayTest {
             actualBts.clear();
         }
         System.out.println("----------------------");
-    }
+    }*/
 }

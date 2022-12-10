@@ -429,4 +429,10 @@ public class BinaryTreeArray implements Serializable {
         for (int i = 0; i < size; i++)
             arrayTree.add(null);
     }
+
+    public BinaryTreeArray newTree(){
+        this.clear();
+        BinaryTreeArray newBts = new BinaryTreeArray(this.comparator);
+        return newBts;
+    }
 }
