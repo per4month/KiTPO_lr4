@@ -305,7 +305,7 @@ class BinaryTreeArrayTest {
     public void testBalanced() {
         System.out.println("BALANCED TEST");
 
-        for (int countOfElem = 1000; countOfElem <= 100000; countOfElem += 1000) {
+        for (int countOfElem = 1000; countOfElem <= 14000; countOfElem += 1000) {
             for (int i = 0; i < countOfElem; i++){
                 actualBts.addValue(protoType.create());
                 if (i % 100 == 0)
