@@ -21,8 +21,8 @@ public class IntegerType implements ProtoType {
     @Override
     public Object create() {
         // генерация случайных чисел [-1000; 1000]
-        int min = -1000;
-        int max = 1000;
+        int min = -1000000000;
+        int max = 1000000000;
         Random rand = new Random();
         IntegerClass intValue = new IntegerClass(rand.nextInt((max - min)) + min);
         return intValue;

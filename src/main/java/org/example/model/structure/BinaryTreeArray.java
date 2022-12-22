@@ -8,6 +8,8 @@ import java.util.Vector;
 
 import java.util.ArrayList;
 
+import org.example.model.structure.DebugLevel;
+
 public class BinaryTreeArray implements Serializable {
 
     private ArrayList <Object> arrayTree;
@@ -16,6 +18,16 @@ public class BinaryTreeArray implements Serializable {
 
     private int size;
 
+    //максимальная длина ветви дерева
+    private int maxLevel;
+
+    //количество объектов в дереве
+    private int countObject;
+
+    private int newSizeBalance;
+
+
+
     // Инициализация структуры данных
     public BinaryTreeArray(Comparator comparator){
         size = 10;
@@ -23,12 +35,16 @@ public class BinaryTreeArray implements Serializable {
         for (int i = 0; i < size; i++)
             arrayTree.add(null);
         this.comparator = comparator;
+        maxLevel = 0;
+        countObject = 0;
     }
 
-    private BinaryTreeArray(int size, ArrayList<Object> t, Comparator c) {
+    private BinaryTreeArray(int size, ArrayList<Object> t, Comparator c, int countObject, int maxLevel) {
         this.size = size;
         this.comparator = c;
         this.arrayTree = t;
+        this.countObject = countObject;
+        this.maxLevel = maxLevel;
     }
 
     public void save(ProtoType userType, String fileName) {
@@ -56,7 +72,7 @@ public class BinaryTreeArray implements Serializable {
             }
 
             while ((line = br.readLine()) != null) {
-                bts.addValue(userType.parseValue(line));
+                bts.addValue(userType.parseValue(line), false, 0, DebugLevel.OFF);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -65,33 +81,60 @@ public class BinaryTreeArray implements Serializable {
     }
 
     // Вcпомогательный метод вставки значения в массив
-    private void insertRecursive(int current, Object obj){
-        /*if (current >= size){ // увеличение размерности при выходе
-            size *= 2; // за пределы массива
-            for (int i = size/2; i <= size; i++) // с обнулением новой части
-               arrayTree.add(null);
-        }*/
+    private void insertRecursive(int current, Object obj, int level, boolean smartBalance, double threshold, DebugLevel debug){
         while (current >= size) {
+            if (debug == DebugLevel.INCREASE_ARRAYLIST)
+                    System.out.println("INCREASE ARRAYLIST. Before: countObject = " + countObject + "; size = " + size + "; log2(count) = " + log2Count(countObject) + "; maxlevel = " + maxLevel + ".");
             size*=2;
             for (int i = size/2; i <= size; i++) // с обнулением новой части
                 arrayTree.add(null);
+            if (debug == DebugLevel.INCREASE_ARRAYLIST)
+                System.out.println("INCREASE ARRAYLIST. After: new size = " + size + ".");
         }
 
         if (arrayTree.get(current) == null) {
             arrayTree.set(current, obj);
+            if (maxLevel < level)
+            {
+                if (debug == DebugLevel.CHANGE_MAXLEVEL)
+                    System.out.println("CHANGE MAXLEVEL. Before: maxLevel = " + maxLevel + "; count = " + countObject + "; log2(count) = " + log2Count(countObject) + ".");
+                maxLevel = level;
+                if (debug == DebugLevel.CHANGE_MAXLEVEL)
+                    System.out.println("CHANGE MAXLEVEL. After: new maxLevel = " + maxLevel + "; log2(count) = " + log2Count(countObject) + ".");
+            }
+            if (maxLevel > log2Count(countObject)*threshold && smartBalance){
+                if (debug == DebugLevel.SMART_INSERT)
+                    System.out.println("!!!!SMART INSERT!!!!. Before: countObject = " + countObject + "; size = " + size + "; maxLevel = " + maxLevel + "; log2Count = " + log2Count(countObject) + ".");
+                BinaryTreeArray btsBalanced = this.balance();
+                arrayTree = btsBalanced.getArrayTree();
+                maxLevel = btsBalanced.getMaxLevel();
+                size = btsBalanced.getSizeArrayTree();
+                countObject = btsBalanced.getCountObject();
+                if (debug == DebugLevel.SMART_INSERT)
+                    System.out.println("!!!!SMART INSERT!!!!. After: countObject = " + countObject + "; size = " + size + "; maxLevel = " + maxLevel + "; log2Count = " + log2Count(countObject) + ".");
+
+            }
             return;
         }
 
         if (comparator.compare(obj,arrayTree.get(current)) < 0)
-            insertRecursive(2 * current + 1, obj);
+            insertRecursive(2 * current + 1, obj, level+1, smartBalance, threshold, debug);
         else
-            insertRecursive(2 * current + 2, obj);
+            insertRecursive(2 * current + 2, obj, level+1, smartBalance, threshold, debug);
     }
 
     // Вставка значения в дерево
-    public void addValue(Object value) {
-        insertRecursive(0, value);
+    public void addValue(Object value, boolean smartBalance, double threshold, DebugLevel debug) {
+        countObject++;
+        insertRecursive(0, value, 0, smartBalance, threshold, debug);
     }
+
+    private int log2Count(int count){
+        return (int)(Math.log10(count)/Math.log10(2));
+    }
+    public int getMaxLevel() {return maxLevel;}
+    public int getCountObject() {return countObject;}
+
     private Object findRecursive(int current, Object value) {
         if (current > size) {
             return null;
@@ -136,6 +179,15 @@ public class BinaryTreeArray implements Serializable {
 
     public void printArray(){
         scan(0,0, false);
+    }
+
+    public ArrayList<Object> getArrayTree() {
+        return arrayTree;
+    }
+
+    public int getSizeArrayTree()
+    {
+        return size;
     }
 
     // Число вершин в поддереве
@@ -276,27 +328,27 @@ public class BinaryTreeArray implements Serializable {
         return obj;
     }
 
-    //рекурсивная балансировка
+    // Построение сбалансированного дерева
     private void  balance(Vector<Object> t, int a, int b, ArrayList<Object> r) {
 
         if (a>b) return;
         if (a==b) return;
 
-        int m=(a+b) >>> 1;                                        // взять строку из середины интервала
+        int m=(a+b)/2;                                        // взять строку из середины интервала
 
         insertRecursive(r, 0,t.get(m));
 
-        balance(t, m+1,b, r);                                   // рекурсивно выполнить для левой и
+        balance(t,m+1, b, r);                                   // рекурсивно выполнить для левой и
 
-        balance(t, a,m,r);                                  // правой частей
+        balance(t, a, m, r);                                  // правой частей
 
     }
     
     //вставка для нового аррайлист при балансировке
     private void insertRecursive(ArrayList<Object> t, int current, Object obj){
-        if (current >= size){ // увеличение размерности при выходе
-            size *= 2; // за пределы массива
-            for (int i = size/2; i <= size; i++) // с обнулением новой части
+        if (current >= newSizeBalance){ // увеличение размерности при выходе
+            newSizeBalance *= 2; // за пределы массива
+            for (int i = newSizeBalance/2; i <= newSizeBalance; i++) // с обнулением новой части
                t.add(null);
         }
 
@@ -311,25 +363,35 @@ public class BinaryTreeArray implements Serializable {
             insertRecursive(t, 2 * current + 2, obj);
     }
     
-    //главный метод балансировки
+    //Балансировка дерева
     public BinaryTreeArray balance(){
 
         int sz1=getSize(0); // ДЕФЕКТ: было int sz1=getSize(0);
 
         Vector <Object> newArray = new Vector<Object> (size); //вектор индексов
 
+        newSizeBalance = 10;
         ArrayList<Object> newArrayTree = new ArrayList<Object>(size);
         for(int i = 0; i < size; i++) {
             newArrayTree.add(null);
         }
         set(newArray,0);
         balance(newArray,0, sz1, newArrayTree);
-        BinaryTreeArray balanced = new BinaryTreeArray(this.size, newArrayTree, this.comparator);
+        int curMaxLevel = 0;
+        if (this.maxLevel != 0)
+            if (this.maxLevel == 1)
+                curMaxLevel = 1;
+            else
+                curMaxLevel = log2Count(countObject);
+        else
+            curMaxLevel = 0;
+        BinaryTreeArray balanced = new BinaryTreeArray(newSizeBalance, newArrayTree, this.comparator, this.countObject,
+                curMaxLevel);
         return balanced;
 
     }
     
-    //метод для добавления индексов в вектор
+    //Обход дерева с сохранением значений в векторе
     private void set(Vector<Object> t, int n){
 
         if (n>=size || arrayTree.get(n) == null) return;

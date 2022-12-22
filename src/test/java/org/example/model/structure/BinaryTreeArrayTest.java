@@ -41,7 +41,7 @@ class BinaryTreeArrayTest {
 
         // Добавление вершин
         for (int value = 0; value < cntNode; value++)
-            actualBts.addValue(protoType.parseValue(String.valueOf(value)));
+            actualBts.addValue(protoType.parseValue(String.valueOf(value)), false, 0, DebugLevel.OFF);
 
         actualBts = actualBts.balance();
 
@@ -50,6 +50,8 @@ class BinaryTreeArrayTest {
 
         System.out.println("Actual sum of path lengths = " + actual);
         System.out.println("Expected sum of path lengths = " + expected);
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
+        actualBts.printTree();
 
         System.out.println("----------------------");
 
@@ -68,7 +70,7 @@ class BinaryTreeArrayTest {
 
         // Добавление вершин
         for (int value = 0; value < cntNode; value++)
-            actualBts.addValue(protoType.parseValue(String.valueOf(cntNode - value)));
+            actualBts.addValue(protoType.parseValue(String.valueOf(cntNode - value)), false, 0, DebugLevel.OFF);
 
         actualBts = actualBts.balance();
 
@@ -77,6 +79,8 @@ class BinaryTreeArrayTest {
 
         System.out.println("Actual sum of path lengths = " + actual);
         System.out.println("Expected sum of path lengths = " + expected);
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
+        actualBts.printTree();
 
         System.out.println("----------------------");
 
@@ -95,7 +99,7 @@ class BinaryTreeArrayTest {
 
         // Добавление вершин
         for (int value = 0; value < cntNode; value++)
-            actualBts.addValue(protoType.parseValue(String.valueOf(3)));
+            actualBts.addValue(protoType.parseValue(String.valueOf(3)), false, 0, DebugLevel.OFF);
 
         actualBts = actualBts.balance();
 
@@ -108,6 +112,8 @@ class BinaryTreeArrayTest {
 
         System.out.println("Actual sum of path lengths = " + actual);
         System.out.println("Expected sum of path lengths = " + expected);
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
+        actualBts.printTree();
 
         System.out.println("----------------------");
 
@@ -126,11 +132,13 @@ class BinaryTreeArrayTest {
 
         // Добавление вершин
         for (int value = 0; value < cntNode; value++) {
-            actualBts.addValue(protoType.create());
+            actualBts.addValue(protoType.create(), false, 0, DebugLevel.OFF);
             actualBts = actualBts.balance(); //после каждого добавления - балансируем
         }
 
         actualBts = actualBts.balance();
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
+        actualBts.printTree();
 
         int actual = actualBts.getSumPathLengths();
         int expected = getExpectedSumPathLength(cntLevel);
@@ -157,11 +165,11 @@ class BinaryTreeArrayTest {
 
         // Добавление вершин левого поддерева относительно корня (вместе с корнем)
         for (int value = 0; value <= median; value++) {
-            actualBts.addValue(protoType.parseValue(String.valueOf(median - value)));
+            actualBts.addValue(protoType.parseValue(String.valueOf(median - value)), false, 0, DebugLevel.OFF);
         }
         // Добавление вершин правого поддерева относительно корня
         for (int value = median + 1; value < cntNode; value++) {
-            actualBts.addValue(protoType.parseValue(String.valueOf(value)));
+            actualBts.addValue(protoType.parseValue(String.valueOf(value)), false, 0, DebugLevel.OFF);
         }
 
         actualBts = actualBts.balance();
@@ -171,6 +179,8 @@ class BinaryTreeArrayTest {
 
         System.out.println("Actual sum of path lengths = " + actual);
         System.out.println("Expected sum of path lengths = " + expected);
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
+        actualBts.printTree();
 
         System.out.println("----------------------");
 
@@ -189,13 +199,14 @@ class BinaryTreeArrayTest {
 
         // Добавление вершин
         for (int value = 0; value < cntNode; value++) {
-            actualBts.addValue(protoType.create());
+            actualBts.addValue(protoType.create(), false, 0, DebugLevel.OFF);
         }
-
+        actualBts.printTree();
         actualBts = actualBts.balance();
 
         int actual = actualBts.getSumPathLengths();
         int expected = getExpectedSumPathLength(cntLevel);
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
 
         System.out.println("Actual sum of path lengths = " + actual);
         System.out.println("Expected sum of path lengths = " + expected);
@@ -212,13 +223,13 @@ class BinaryTreeArrayTest {
         System.out.println("TEST 7. The middle element is repeated several times");
 
         // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("11"));
-        actualBts.addValue(protoType.parseValue("9"));
-        actualBts.addValue(protoType.parseValue("10"));
-        actualBts.addValue(protoType.parseValue("6"));
-        actualBts.addValue(protoType.parseValue("7"));
-        actualBts.addValue(protoType.parseValue("9"));
-        actualBts.addValue(protoType.parseValue("13"));
+        actualBts.addValue(protoType.parseValue("11"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("9"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("10"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("6"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("7"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("9"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("13"), false, 0, DebugLevel.OFF);
 
         actualBts = actualBts.balance();
 
@@ -232,6 +243,8 @@ class BinaryTreeArrayTest {
 
         System.out.println("Actual sum of path lengths = " + actual);
         System.out.println("Expected sum of path lengths = " + expected);
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
+        actualBts.printTree();
 
         System.out.println("----------------------");
 
@@ -245,13 +258,13 @@ class BinaryTreeArrayTest {
         System.out.println("TEST 8. The middle element in leaf of left subtree");
 
         // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("11"));
-        actualBts.addValue(protoType.parseValue("10"));
-        actualBts.addValue(protoType.parseValue("6"));
-        actualBts.addValue(protoType.parseValue("7"));
-        actualBts.addValue(protoType.parseValue("13"));
-        actualBts.addValue(protoType.parseValue("3"));
-        actualBts.addValue(protoType.parseValue("9"));
+        actualBts.addValue(protoType.parseValue("11"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("10"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("6"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("7"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("13"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("3"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("9"), false, 0, DebugLevel.OFF);
 
         actualBts = actualBts.balance();
 
@@ -261,6 +274,8 @@ class BinaryTreeArrayTest {
 
         System.out.println("Actual sum of path lengths = " + actual);
         System.out.println("Expected sum of path lengths = " + expected);
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
+        actualBts.printTree();
 
         System.out.println("----------------------");
 
@@ -274,13 +289,13 @@ class BinaryTreeArrayTest {
         System.out.println("TEST 9. The middle element in root of tree");
 
         // Актуальное значение дерева
-        actualBts.addValue(protoType.parseValue("9"));
-        actualBts.addValue(protoType.parseValue("10"));
-        actualBts.addValue(protoType.parseValue("6"));
-        actualBts.addValue(protoType.parseValue("13"));
-        actualBts.addValue(protoType.parseValue("11"));
-        actualBts.addValue(protoType.parseValue("4"));
-        actualBts.addValue(protoType.parseValue("5"));
+        actualBts.addValue(protoType.parseValue("9"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("10"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("6"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("13"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("11"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("4"), false, 0, DebugLevel.OFF);
+        actualBts.addValue(protoType.parseValue("5"), false, 0, DebugLevel.OFF);
 
         actualBts = actualBts.balance();
 
@@ -290,6 +305,8 @@ class BinaryTreeArrayTest {
 
         System.out.println("Actual sum of path lengths = " + actual);
         System.out.println("Expected sum of path lengths = " + expected);
+        System.out.println("maxLevel = " + actualBts.getMaxLevel() + "; count = " + actualBts.getCountObject());
+        actualBts.printTree();
 
         // Сравниваем
         assertEquals(expected, actual);
@@ -305,12 +322,11 @@ class BinaryTreeArrayTest {
     public void testBalanced() {
         System.out.println("BALANCED TEST");
 
-        for (int countOfElem = 1000; countOfElem <= 14000; countOfElem += 1000) {
+        for (int countOfElem = 10000; countOfElem <= 1300000000; countOfElem *= 2) {
             for (int i = 0; i < countOfElem; i++){
-                actualBts.addValue(protoType.create());
-                if (i % 100 == 0)
-                    actualBts = actualBts.balance();
+                actualBts.addValue(protoType.create(), true, 1.2, DebugLevel.OFF);
             }
+
             actualBts = actualBts.balance();
 
             long startTime = System.nanoTime();
@@ -323,27 +339,15 @@ class BinaryTreeArrayTest {
         System.out.println("----------------------");
     }
 
-    /*
-     * Тест производительности
-     * 1. Генерируются последовательно от 5000 до 100000 элементов в дереве (с шагом 5000)
-     * 2. Далее засекается время работы метода балансировки дерева balance()
-     */
+    @org.junit.jupiter.api.Test
+    public void testInsert() {
+        System.out.println("INSERT TEST");
 
-   /*@org.junit.jupiter.api.Test
-    public void testPerformance() {
-        System.out.println("PERFORMANCE TEST");
-
-        for (int countOfElem = 1; countOfElem <= 1; countOfElem *=2) {
-            for (int i = 0; i < countOfElem; i++){
-                actualBts.addValue(protoType.create());
-            }
-            long startTime = System.nanoTime();
-            actualBts = actualBts.balance();
-            long endTime = System.nanoTime();
-            double timeElapsed = (endTime - startTime) * 1.0 / 1_000_000;
-            System.out.println("N = " + countOfElem + ". Time = " + timeElapsed + " ms.");
-            actualBts.clear();
+        int countOfElem = 100000;
+        for (int i = 0; i < countOfElem; i++){
+            actualBts.addValue(protoType.create(), true, 1.5, DebugLevel.INCREASE_ARRAYLIST);
         }
-        System.out.println("----------------------");
-    }*/
+        System.out.println("Insert is done! count = " + countOfElem);
+    }
+
 }
